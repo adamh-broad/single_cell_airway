@@ -16,7 +16,7 @@ We combine single-cell RNA-seq and in vivo lineage tracing to study the cellular
 
 Experimental workflow            |  GFP(Foxi1)+ ionocytes
 :-------------------------:|:-------------------------:
-![](https://github.com/adamh-broad/single_cell_airway/blob/master/fig1a.jpg)  |  ![](https://github.com/adamh-broad/single_cell_intestine/blob/master/fox1_gfp.jpg)
+![](https://github.com/adamh-broad/single_cell_airway/blob/master/fig1a.jpg)  |  ![](https://github.com/adamh-broad/single_cell_airway/blob/master/fox1_gfp.jpg)
 
 ## Related Resources
 * <a href="https://www.nature.com/"> Associated paper </a>
