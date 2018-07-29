@@ -130,9 +130,10 @@ for(i in 1:length(unique(x$variable)))
 pv = cbind.data.frame(pv_tp30, pv_tp60, pv_timepoint)
 rownames(pv) = levels(x$variable)
 write.table(pv, file="NB_pvals_timepoint.txt", sep="\t", quote=F)
+```
 
-
-### Draw bar plots
+``` r
+### Draw bar plots showing these fractions (Fig 3c)
 x = as.data.frame.matrix(table(md$mouse, md[, use_clust]))
 y = as.data.frame.matrix(table(md$batch, md[, use_clust]))
 y$color = str_split_fixed(rownames(y),fixed("_"),3)[,3]
