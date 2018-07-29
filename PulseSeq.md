@@ -85,14 +85,12 @@ d$timepoint = str_split_fixed(d$tp_cell,fixed("_"),2)[,2]
 write.table(d, file="pulse_seq_labeled_frac.txt", sep = "\t", quote=F, row.names = F)
 ```
 
-### Draw bar plots showing these fractions (Fig 3c)
+### Compute the p-values for increasing labeled fraction (using negative binomial regression)
 
 ``` r
 cell.order = c("Club", "Ciliated", "Goblet", "Tuft", "Neuroendocrine", "Ionocyte") 
 cl = as.character(ps@meta.data$res.2_named)
 cols = material.cols[c(3,5,8,10, 13,16,17,18)]
-
-### Compute the p-values for increasing labeled fraction (using negative binomial regression)
 x = as.data.frame.matrix(table(md$batch, md[, use_clust]))
 x$timepoint = str_split_fixed(rownames(x),fixed("_"),3)[,1]
 x$color = str_split_fixed(rownames(x),fixed("_"),3)[,3]
@@ -132,8 +130,8 @@ rownames(pv) = levels(x$variable)
 write.table(pv, file="NB_pvals_timepoint.txt", sep="\t", quote=F)
 ```
 
-``` r
 ### Draw bar plots showing these fractions (Fig 3c)
+``` r
 x = as.data.frame.matrix(table(md$mouse, md[, use_clust]))
 y = as.data.frame.matrix(table(md$batch, md[, use_clust]))
 y$color = str_split_fixed(rownames(y),fixed("_"),3)[,3]
