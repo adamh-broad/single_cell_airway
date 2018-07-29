@@ -256,7 +256,6 @@ md_show = subset(md, celltype %in% cells.show & fit == fit.use)
 annotation_df <- compute_pvals(d, show.pairs = to_all_pairs(cells.show), test.use = "rank", linear = F, se="boot")
 annotation_df$y <- compute_signif_height_slope(an_dt = annotation_df, full_dt = md_show, adj = 0.0005)
 annotation_df$sig = symnum(annotation_df$p.value, corr = FALSE, na = FALSE, cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1), symbols = c("***", "**", "*", ".", "NS"))
-write.table(annotation_df, file="Linear_rate_estimate_pvals.txt", sep="\t", quote=F, row.names=F)
 annotation_df = subset(annotation_df, p.value < 0.05)
 annotation_df = annotation_df[c(3,7),]
 dy = 0.0015 # cosmetics: move the significance bars around
