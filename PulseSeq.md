@@ -1,10 +1,10 @@
-Analysis of 'pulse-seq' lineage trace of 65,000 airway epithelial cells
+Analysis of 'pulse-seq' lineage trace of 65,265 airway epithelial cells
 ================
 
 Load required R packages
 ------------------------
 
-### Can be installed using 'install.package'
+### Can be installed using 'install.packages'
 
 ``` r
 library(NMF)
@@ -23,10 +23,7 @@ library(quantreg)
 source("Fxns.R")
 ```
 
-    ## 2018-07-29 14:59:18 INFO: Loading default colors
-
-### Load UMI count data from GEO and clustering and dimensionality reduction (output of 'Pre\_process' analysis)
-
+### Load UMI count data from GEO and pre-computed clustering and dimensionality reduction 
 ``` r
 ## Downloading UMI count data
 #download.file("ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE92nnn/GSE92332/suppl/GSE92332_atlas_UMIcounts.txt.gz", destfile="GSE92332_atlas_UMIcounts.txt.gz")
@@ -36,7 +33,7 @@ ps_umis = readRDS("PulseSeq_UMI_counts.rds")
 info(sprintf("Data dimensions: %s" , paste(dim(ps_umis), collapse = "x")))
 ```
 
-    ## 2018-07-29 14:59:23 INFO: Data dimensions: 27998x66265
+    ## 2018-07-29 15:05:45 INFO: Data dimensions: 27998x66265
 
 ``` r
 ps = CreateSeuratObject(raw.data=ps_umis,min.cells = 0, min.genes = 0)
@@ -118,16 +115,16 @@ for(i in 1:length(unique(x$variable)))
     if(any(d$total==0)){warn("Removing mice that didn't detect this celltype"); d = subset(d, total > 0)}
     ## test timepoint 30 against tp 0
     x1 = subset(d, timepoint != "Tp60")
-    nb = MASS::glm.nb(formula = value ~ timepoint + offset(log(as.numeric(x1$total))), data=x1, maxit=1000, control=glm.control(trace = 3))
+    nb = MASS::glm.nb(formula = value ~ timepoint + offset(log(as.numeric(x1$total))), data=x1, maxit=1000)#, control=glm.control(trace = 3))
     pv_tp30[i] = anova(nb, test="LRT")$`Pr(>Chi)`[2]
     
     ## test timepoint 60 against tp 0
     x2 = subset(d, timepoint != "Tp30")
-    nb = MASS::glm.nb(formula = value ~ timepoint + offset(log(as.numeric(x2$total))), data=x2, maxit=1000, control=glm.control(trace = 3))
+    nb = MASS::glm.nb(formula = value ~ timepoint + offset(log(as.numeric(x2$total))), data=x2, maxit=1000) #, control=glm.control(trace = 3))
     pv_tp60[i] = anova(nb, test="LRT")$`Pr(>Chi)`[2]
     
     ## test timepoint
-    nb = MASS::glm.nb(formula = value ~ timepoint + offset(log(as.numeric(d$total))), data=d, maxit=1000, control=glm.control(trace = 3))
+    nb = MASS::glm.nb(formula = value ~ timepoint + offset(log(as.numeric(d$total))), data=d, maxit=1000) #, control=glm.control(trace = 3))
     pv_timepoint[i] = anova(nb, test="LRT")$`Pr(>Chi)`[2]
 }
 pv = cbind.data.frame(pv_tp30, pv_tp60, pv_timepoint)
@@ -176,6 +173,9 @@ g = g + geom_errorbar(data=d, aes(x=timepoint, y =gfp_frac_glmm, ymin=gfp_frac_g
 g = g + geom_jitter(width=0.1, size=1, shape=15, color="black") + facet_wrap(~cell, scales="free") + ylab("Lineage-labeled fraction of each cell-type (%)") + xlab("") + theme(strip.text.x = element_text(size = 11), strip.background = element_blank()) + scale_y_continuous(labels = scales::percent, expand=c(0,0)) + xlab("Days after tamoxifen-induced labeling") 
 print(g + sb)
 ```
+
+<img src="PulseSeq_figs/PulseSeq-fig3c-1.png" style="display: block; margin: auto;" />
+
 
 Estimating the turnover rate of the cells and inferring their lineage (Fig 3d)
 ------------------------------------------------------------------------------
@@ -235,8 +235,10 @@ names(pv) <- unique(d$celltype)
 fdr = p.adjust(pv)
 title <- ggdraw() + draw_label("Pulse-seq lineage trace (solid=QR, dotted=LM)", fontface='bold')
 pg = cowplot::plot_grid(plotlist = plots)
-ggsave(plot_grid(title, pg, ncol=1, rel_heights=c(0.1, 1)), file="Linear_fit.pdf", width=10, height=10)
+print(plot_grid(title, pg, ncol=1, rel_heights=c(0.1, 1)))
 ```
+
+<img src="PulseSeq_figs/PulseSeq-fig_ED_6c-1.png" style="display: block; margin: auto;" />
 
 ### Test the difference in regression slope (rate of new lineage-labeled cells) to infer lineage (Fig 3d)
 
@@ -262,11 +264,6 @@ dy = 0.0015 # cosmetics: move the significance bars around
 annotation_df$y[annotation_df$start=="Goblet"] = annotation_df$y[annotation_df$start=="Goblet"]  + dy*1.5
 g = ggplot(md_show, aes(x=celltype, y=coeff)) + geom_point(shape=15, size=2) + geom_errorbar(aes(ymin=coeff_lwr, ymax=coeff_upr), width=.1) + xlab("") + theme(axis.text.x =element_text(angle=45, hjust=1)) + ylab("Estimated rate of new\nGFP+ cells per day (%)") + scale_y_continuous(labels = scales::percent) + ggtitle("Pulse-seq rate estimate")
 signif_bars = geom_signif(data=annotation_df, aes(xmin=start, xmax=end, y_position=y, annotations=signif(p.value,3)),  textsize = 3.5, vjust = -0.2, manual=TRUE, tip_length=0.0002) 
-```
-
-    ## Warning: Ignoring unknown aesthetics: xmin, xmax, y_position, annotations
-
-``` r
 print(g + signif_bars)
 ```
 
