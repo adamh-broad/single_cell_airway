@@ -8,43 +8,11 @@ Load required R packages
 
 ``` r
 library(NMF)
-```
-
-    ## Loading required package: pkgmaker
-
-    ## Loading required package: registry
-
-    ## Loading required package: rngtools
-
-    ## Loading required package: cluster
-
-    ## NMF - BioConductor layer [OK] | Shared memory capabilities [NO: bigmemory] | Cores 7/8
-
-    ##   To enable shared memory capabilities, try: install.extras('
-    ## NMF
-    ## ')
-
-``` r
 library(RColorBrewer)
 library(statmod)
 library(ggplot2)
 library(cowplot)
-```
-
-    ## 
-    ## Attaching package: 'cowplot'
-
-    ## The following object is masked from 'package:ggplot2':
-    ## 
-    ##     ggsave
-
-``` r
 library(Seurat)
-```
-
-    ## Loading required package: Matrix
-
-``` r
 library(Matrix)
 ### Load all the required functions for this analysis
 source("Fxns.R")
