@@ -20,7 +20,7 @@ Experimental workflow            |  GFP(Foxi1)+ ionocytes
 
 ## Related Resources
 * <a href="https://www.nature.com/"> Associated paper </a>
-* <a href="https://portals.broadinstitute.org/single_cell/study/trachea-epithelium">Single Cell Portal (Broad Institute)</a>
+* <a href="https://portals.broadinstitute.org/single_cell/study/airway-epithelium">Single Cell Portal (Broad Institute)</a>
 * <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE103354">GEO Database link</a>
 
 For questions or issues email:
