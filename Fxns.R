@@ -3,23 +3,10 @@ brewer16 = c(brewer.pal(9, "Set1"), brewer.pal(7, "Set2"))
 brewer16[6] = "khaki2"
 brewer16[8] = "lightskyblue2"
 
-cubehelix1.16 = c('#000000', '#1B0F00', '#411704', '#681B20', 
-    '#85214B', '#932D7E', '#9042AF', '#8160D2', '#6F83E3', 
-    '#63A6E2', '#65C5D3', '#78DBC2', '#99E9B9', '#C1F0BF', '#E6F5D8', '#FFFFFF')
-
 extract.field=function(string,field=1,delim="_", fixed=T) {
     return(strsplit(string,delim, fixed=fixed)[[1]][field])
 }
 
-### Compute the group-wise mean of a dataset.
-group.means <- function(counts, groups, fn=mean, use.data.table=F)
-{
-	counts <- aggregate(t(counts), by=list(groups), FUN=fn)
-	rownames(counts) = counts$Group.1
-	counts$Group.1 = NULL
-	r = t(counts)
-	return(r)
-}
 
 # Logging utility function
 info <- function(text, ...)
@@ -42,18 +29,6 @@ tpm <- function(counts, mult=10000)
 	scaled.counts * mult
 }
 
-
-### Run ComBat batch correction from the SVA package
-batch.normalise.comBat <- function(counts, batch.groups, max.val=6)
-{
-    batch.groups = factor(batch.groups) ## drop zero levels
-    batch.id = 1:length(unique(batch.groups))
-    names(batch.id) = unique(batch.groups)
-    batch.ids = batch.id[batch.groups]
-    correct.data = ComBat(counts,batch.ids, prior.plots=FALSE, par.prior=TRUE)
-    correct.data[correct.data > max.val] = max.val
-    as.data.frame(correct.data)
-}
 
 ### Extract variable genes - custom code
 get.variable.genes.umis <- function(umi.cts, residual.threshold=-0.25, use.spline=F, batch=NULL, ret.plot=F)
@@ -117,7 +92,6 @@ get.variable.genes.umis <- function(umi.cts, residual.threshold=-0.25, use.splin
     if(ret.plot){return(list("var.genes"=rv, "plot"=g, "fit.data"=z, "logit"=model.logit))}
     rv
 }
-
 
 info("Loading default colors")
 default.cols = function(n){
@@ -317,9 +291,8 @@ make_plot <- function(real, lin_model, quant_reg_model=NULL, title=NULL, pt.col=
 
 
 
-### estimate differences in cell-type turnover from basal cells by assessing differences 
-### in the slope of the linear (quantile) regression
-
+### Estimate differences in cell-type turnover from basal cells by assessing differences 
+### in the slope of the linear or quantile regression
 ### this pacakge (emmeans, formally lsmeans) is very useful, but doesn't work for quantreg fits
 #=============================================================================================
 # for the linear model:
@@ -333,10 +306,8 @@ make_plot <- function(real, lin_model, quant_reg_model=NULL, title=NULL, pt.col=
 #m.list = emtrends(m.interaction, "celltype", var="timepoint")
 #pairs(m.list)
 #=============================================================================================
-
-
-## instead, we can use the likelihood-ratio test to compare the slopes using an interaction
-## see here: https://stats.stackexchange.com/questions/33013/what-test-can-i-use-to-compare-slopes-from-two-or-more-regression-models
+## Instead, we can use the 'rank' test to compare the slopes using an interaction
+## see discussion here: https://stats.stackexchange.com/questions/33013/what-test-can-i-use-to-compare-slopes-from-two-or-more-regression-models
 test_pair <- function(d_all, c1, c2, test="rank", se = "boot", linear=F)
 {
     ### prepare data
