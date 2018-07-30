@@ -26,7 +26,7 @@ source("Fxns.R")
 ### Load UMI count data from GEO and pre-computed clustering and dimensionality reduction 
 ``` r
 ## Downloading UMI count data
-#download.file("ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE92nnn/GSE92332/suppl/GSE92332_atlas_UMIcounts.txt.gz", destfile="GSE92332_atlas_UMIcounts.txt.gz")
+#download.file("ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE92nnn/ ????", destfile="PulseSeq_UMI_counts.rds")
 ## Reading UMI count data from file
 ## Note that processed UMI data already has ~500 contaminating immune (dendritic) cells, and all low quality (<1000 genes detected) cells removed
 ps_umis = readRDS("PulseSeq_UMI_counts.rds")
@@ -98,7 +98,6 @@ x$batch = paste(str_split_fixed(rownames(x),fixed("_"),3)[,1], str_split_fixed(r
 x = melt(x, id.vars = c("color", "timepoint", "batch"))
 x = subset(x, x$variable %in% cell.order)
 x$variable= factor(x$variable)
-pv_timepoint = vector()
 pv_tp30 = vector()
 pv_tp60 = vector()
 for(i in 1:length(unique(x$variable)))
@@ -120,12 +119,8 @@ for(i in 1:length(unique(x$variable)))
     x2 = subset(d, timepoint != "Tp30")
     nb = MASS::glm.nb(formula = value ~ timepoint + offset(log(as.numeric(x2$total))), data=x2, maxit=1000) #, control=glm.control(trace = 3))
     pv_tp60[i] = anova(nb, test="LRT")$`Pr(>Chi)`[2]
-    
-    ## test timepoint
-    nb = MASS::glm.nb(formula = value ~ timepoint + offset(log(as.numeric(d$total))), data=d, maxit=1000) #, control=glm.control(trace = 3))
-    pv_timepoint[i] = anova(nb, test="LRT")$`Pr(>Chi)`[2]
 }
-pv = cbind.data.frame(pv_tp30, pv_tp60, pv_timepoint)
+pv = cbind.data.frame(pv_tp30, pv_tp60)
 rownames(pv) = levels(x$variable)
 write.table(pv, file="NB_pvals_timepoint.txt", sep="\t", quote=F)
 ```
