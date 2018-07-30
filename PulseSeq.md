@@ -26,7 +26,7 @@ source("Fxns.R")
 ### Load UMI count data from GEO and pre-computed clustering and dimensionality reduction 
 ``` r
 ## Downloading UMI count data
-download.file("https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE103354&format=file&file=GSE103354%5FPulseSeq%5FUMI%5Fcounts%2Erds%2Egz", destfile="PulseSeq_UMI_counts.rds")
+download.file("ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE103nnn/GSE103354/suppl/GSE103354_PulseSeq_UMI_counts.rds.gz", destfile="PulseSeq_UMI_counts.rds")
 ## Reading UMI count data from file
 ## Note that processed UMI data already has ~500 contaminating immune (dendritic) cells, and all low quality (<1000 genes detected) cells removed
 ps_umis = readRDS("PulseSeq_UMI_counts.rds")
