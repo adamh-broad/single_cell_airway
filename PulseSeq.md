@@ -39,7 +39,7 @@ info(sprintf("Data dimensions: %s" , paste(dim(ps_umis), collapse = "x")))
 ps = CreateSeuratObject(raw.data=ps_umis,min.cells = 0, min.genes = 0)
 ps = NormalizeData(object = ps,normalization.method = "LogNormalize", scale.factor = 10000,display.progress = TRUE)
 ps@dr = readRDS("dr.rds")
-ps@meta.data= read.delim("meta_data_regressed.txt")
+ps@meta.data= read.delim("md.txt.gz")
 rownames(ps@meta.data) = ps@cell.names
 rownames(ps@dr$tsne@cell.embeddings) = ps@cell.names
 ```
