@@ -19,6 +19,7 @@ library(plyr)
 library(ggsignif)
 library(reshape2)
 library(quantreg)
+library(R.utils)
 ### Load all the required functions for this analysis
 source("Fxns.R")
 ```
@@ -26,7 +27,8 @@ source("Fxns.R")
 ### Load UMI count data from GEO and pre-computed clustering and dimensionality reduction 
 ``` r
 ## Downloading UMI count data
-download.file("ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE103nnn/GSE103354/suppl/GSE103354_PulseSeq_UMI_counts.rds.gz", destfile="PulseSeq_UMI_counts.rds")
+download.file("ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE103nnn/GSE103354/suppl/GSE103354_PulseSeq_UMI_counts.rds.gz", destfile="PulseSeq_UMI_counts.rds.gz")
+gunzip(filename="PulseSeq_UMI_counts.rds.gz", destname="PulseSeq_UMI_counts.rds")
 ## Reading UMI count data from file
 ## Note that processed UMI data already has ~500 contaminating immune (dendritic) cells, and all low quality (<1000 genes detected) cells removed
 ps_umis = readRDS("PulseSeq_UMI_counts.rds")
