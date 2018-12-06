@@ -35,11 +35,11 @@ source("Fxns.R")
 
 ### Load UMI count data from GEO and clustering and dimensionality reduction (output of 'Pre_process' analysis)
 ```{r load_data}
-## Downloading UMI count data
-#download.file("ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE92nnn/GSE92332/suppl/GSE92332_atlas_UMIcounts.txt.gz", destfile="GSE92332_atlas_UMIcounts.txt.gz")
-## Reading UMI count data from file
-## Note that processed UMI data already has ~500 contaminating immune (dendritic) cells, and all low quality (<1000 genes detected) cells removed
-ps_umis = readRDS("PulseSeq_UMI_counts.rds")
+## Downloading UMI count data using a terminal: 
+> wget ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE103nnn/GSE103354/suppl/GSE103354_PulseSeq_UMI_counts.rds.gz
+> gunzip GSE103354_PulseSeq_UMI_counts.rds.gz
+## Reading UMI count data from file. Note that processed UMI data already has ~500 contaminating immune (dendritic) cells, and all low quality (<1000 genes detected) cells removed
+ps_umis = readRDS("GSE103354_PulseSeq_UMI_counts.rds")
 info(sprintf("Data dimensions: %s" , paste(dim(ps_umis), collapse = "x")))
 ps = CreateSeuratObject(raw.data=ps_umis,min.cells = 0, min.genes = 0)
 ps = NormalizeData(object = ps,normalization.method = "LogNormalize", scale.factor = 10000,display.progress = TRUE)
